@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_note_app/screens/add_note_screen.dart';
+import 'package:flutter_note_app/screens/dashboard_screen.dart';
 import 'package:flutter_note_app/screens/register_screen.dart';
 import 'package:flutter_note_app/screens/splash_screen.dart';
+
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,10 +19,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      initialRoute: '/register',
+      initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
         '/register': (context) => const RegisterScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/dashboard': (context) => const Dashboard(),
+        '/add_note': (context) => const AddNoteScreen(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

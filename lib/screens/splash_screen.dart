@@ -1,25 +1,30 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_note_app/constants.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../widgets.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(const Duration(seconds: 3),
+        () => {Navigator.pushReplacementNamed(context, '/add_note')});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: backgroundImage(
+    return const Scaffold(
+      body: BackgroundImage(
         child: Center(
-          child: SizedBox(
-            width: 220,
-            height: 220,
-            child: SvgPicture.asset(
-              'assets/logoSVG.svg',
-              color: kColor_2,
-            ),
-          ),
+          child: LogoSvgIcon(height: 220, width: 220),
         ),
       ),
     );

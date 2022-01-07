@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_note_app/constants.dart';
-import 'package:flutter_note_app/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+import '../widgets.dart';
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class RegisterScreen extends StatelessWidget {
               const LogoSvgIcon(width: 80, height: 80),
               const Spacer(),
               Text(
-                "create new account".toUpperCase(),
+                "access your account".toUpperCase(),
                 style: GoogleFonts.anton(
                   textStyle: const TextStyle(
                     fontWeight: FontWeight.w400,
@@ -89,7 +90,7 @@ class RegisterScreen extends StatelessWidget {
                 ),
                 child: Center(
                     child: Text(
-                  'Sign Up',
+                  'Sign In',
                   style: GoogleFonts.poppins(
                     textStyle: const TextStyle(
                       color: kWhite,
