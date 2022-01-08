@@ -50,10 +50,10 @@ class _DashboardState extends State<Dashboard> {
             ],
           ),
         ),
-        floatingActionButton: const FloatingActionButton(
-          onPressed: null,
-          backgroundColor: kColor_1,
-          child: Center(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => {Navigator.pushNamed(context, '/add_note')},
+          backgroundColor: kColor_2,
+          child: const Center(
             child: Icon(
               MdiIcons.plusThick,
               color: kWhite,

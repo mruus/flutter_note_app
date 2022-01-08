@@ -18,13 +18,22 @@ class AddNoteScreen extends StatelessWidget {
               // Title Input
               Container(
                 width: double.infinity,
+                // height: 130,
                 margin: const EdgeInsets.symmetric(
                   horizontal: kMargin,
-                  vertical: kMargin,
+                  vertical: kMargin / 2,
+                ),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: kColor_1,
+                      width: .5,
+                    ),
+                  ),
                 ),
                 child: TextField(
                   minLines: 1,
-                  maxLines: 10,
+                  maxLines: 20,
                   decoration: const InputDecoration(
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
@@ -40,29 +49,31 @@ class AddNoteScreen extends StatelessWidget {
               ),
 
               // Description Input
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: kMargin,
-                  vertical: kMargin,
-                ),
-                child: TextField(
-                  minLines: 1,
-                  maxLines: 20,
-                  decoration: const InputDecoration(
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    hintText: "Enter Title",
+              Expanded(
+                child: Container(
+                  // width: double.infinity,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: kMargin,
+                    vertical: kMargin,
                   ),
-                  style: GoogleFonts.poppins(
-                    textStyle: const TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
+                  child: TextField(
+                    minLines: 1,
+                    maxLines: 50,
+                    decoration: const InputDecoration(
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      hintText: "Enter Description",
+                    ),
+                    style: GoogleFonts.poppins(
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
               ),
-              const Spacer(),
+              // const Spacer(),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: kMargin),
                 width: double.infinity,

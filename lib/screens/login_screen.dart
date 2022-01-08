@@ -1,11 +1,45 @@
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note_app/constants.dart';
+import 'package:flutter_note_app/models/authentication.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../widgets.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool isError = false, isDone = true;
+  String errorMessage = "Error Will Be Showed";
+  var db = Queries(FirebaseAuth.instance);
+
+  bool isValid() {
+    if (_passwordController.text == "" && _emailController.text == "") {
+      isError = true;
+      errorMessage = "Email And Password Are Required";
+    } else if (_emailController.text == "") {
+      isError = true;
+      errorMessage = "Email Is Required";
+    } else if (_passwordController.text == "") {
+      isError = true;
+      errorMessage = "Password Is Required";
+    } else if (!EmailValidator.validate(_emailController.text)) {
+      isError = true;
+      errorMessage = "Email Is Invalid!";
+    } else {
+      isError = false;
+      errorMessage = "";
+    }
+    return !isError;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +49,13 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 100),
-              const LogoSvgIcon(width: 80, height: 80),
+              TopBarAuth(
+                text2: '   Sign Up',
+                text1: "I Don't Have An Account",
+                detectTap: () {
+                  Navigator.pushReplacementNamed(context, '/register');
+                },
+              ),
               const Spacer(),
               Text(
                 "access your account".toUpperCase(),
@@ -44,12 +84,13 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 43),
               // Email Input
-              const SizedBox(
+              SizedBox(
                 width: 303,
                 height: 48,
                 child: TextField(
+                  controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: kColor_1, width: 1),
                     ),
@@ -62,13 +103,14 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 27),
               // Password Input
-              const SizedBox(
+              SizedBox(
                 width: 303,
                 height: 48,
                 child: TextField(
+                  controller: _passwordController,
                   obscureText: true,
                   obscuringCharacter: '*',
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: kColor_1, width: 1),
                     ),
@@ -81,27 +123,66 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 27),
               // Button
-              Container(
-                width: 303,
-                height: 48,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  color: kColor_2,
-                ),
-                child: Center(
-                    child: Text(
-                  'Sign In',
-                  style: GoogleFonts.poppins(
-                    textStyle: const TextStyle(
-                      color: kWhite,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
+              GestureDetector(
+                onTap: () async {
+                  if (!isValid()) {
+                    setState(() {
+                      isError = true;
+                    });
+                  } else {
+                    setState(() {
+                      isDone = false;
+                    });
+
+                    db.email = _emailController.text;
+                    db.password = _passwordController.text;
+                    await db.loginUser();
+
+                    setState(() {
+                      isDone = true;
+
+                      if (db.errorMessage != '') {
+                        isError = true;
+                        errorMessage = db.errorMessage;
+                      } else {
+                        isError = false;
+                      }
+                    });
+                  }
+                },
+                child: Container(
+                  width: 303,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                    color: kColor_2,
                   ),
-                )),
+                  child: Center(
+                    child: isDone
+                        ? Text(
+                            'Sign In',
+                            style: GoogleFonts.poppins(
+                              textStyle: const TextStyle(
+                                color: kWhite,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          )
+                        : const SizedBox(
+                            height: 40,
+                            child: SpinKitWave(
+                              color: kColor_4,
+                              size: 15.0,
+                              itemCount: 10,
+                            ),
+                          ),
+                  ),
+                ),
               ),
               const SizedBox(height: 15),
-              Container(
+              if (isError)
+                Container(
                   width: 303,
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
@@ -110,7 +191,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      'Email invalid!',
+                      errorMessage,
                       style: GoogleFonts.poppins(
                         textStyle: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -119,7 +200,8 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )),
+                  ),
+                ),
               const SizedBox(height: 15)
             ],
           ),
