@@ -24,11 +24,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<Queries>(
-          create: (_) => Queries(FirebaseAuth.instance),
+        Provider<AuthQueries>(
+          create: (_) => AuthQueries(FirebaseAuth.instance),
         ),
         StreamProvider(
-          create: (_) => Queries(FirebaseAuth.instance).isAuthenticated,
+          create: (_) => AuthQueries(FirebaseAuth.instance).isAuthenticated,
           initialData: null,
         ),
       ],

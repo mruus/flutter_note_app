@@ -19,7 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool isError = false, isDone = true;
   String errorMessage = "Error Will Be Showed";
-  var db = Queries(FirebaseAuth.instance);
+  var db = AuthQueries(FirebaseAuth.instance);
 
   bool isValid() {
     if (_passwordController.text == "" && _emailController.text == "") {

@@ -157,7 +157,7 @@ class LoggedUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
-    var db = Queries(FirebaseAuth.instance);
+    var db = AuthQueries(FirebaseAuth.instance);
     return Container(
       margin: const EdgeInsets.only(
         top: kMargin + 10,
