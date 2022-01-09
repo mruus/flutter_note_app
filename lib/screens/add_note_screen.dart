@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note_app/constants.dart';
-import 'package:flutter_note_app/models/notes.dart';
+import 'package:flutter_note_app/models/note_queries.dart';
 import 'package:flutter_note_app/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -112,10 +112,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                 onTap: () async {
                   if (!isValid()) {
                     setState(() {
-                      isError = false;
+                      isError = true;
                     });
                   } else {
-                    note.title = _descriptionController.text;
+                    note.title = _titleController.text;
                     note.description = _descriptionController.text;
                     note.uid = firebaseUser!.uid;
 

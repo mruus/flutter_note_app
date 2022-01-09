@@ -10,12 +10,12 @@ import 'package:flutter_note_app/wrapper.dart';
 import 'package:provider/provider.dart';
 import 'screens/login_screen.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
-
+ 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
