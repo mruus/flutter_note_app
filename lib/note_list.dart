@@ -24,7 +24,7 @@ class _NoteListState extends State<NoteList> {
       children: [
         if (notesList.isNotEmpty)
           for (var i = 0; i < notesList.length; i++)
-            CardNote(title: notesList[i].title),
+            CardNote(title: notesList[i].title, id: notesList[i].id , description: notesList[i].description),
         if (notesList.isEmpty) const Text("Empty Note"),
       ],
     );

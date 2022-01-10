@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note_app/constants.dart';
+import 'package:flutter_note_app/screens/add_note_screen.dart';
+import 'package:flutter_note_app/screens/custom_dialogue.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -63,8 +65,10 @@ class CardNote extends StatelessWidget {
   const CardNote({
     Key? key,
     required this.title,
+    required this.id,
+    required this.description,
   }) : super(key: key);
-  final String title;
+  final String title, id, description;
 
   @override
   Widget build(BuildContext context) {
@@ -99,18 +103,32 @@ class CardNote extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  color: kColor_1,
-                ),
-                child: const Center(
-                  child: Icon(
-                    MdiIcons.pencil,
-                    color: kWhite,
-                    size: 15,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddNoteScreen(
+                        head: title,
+                        body: description,
+                        type: id,
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2),
+                    color: kColor_1,
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      MdiIcons.pencil,
+                      color: kWhite,
+                      size: 15,
+                    ),
                   ),
                 ),
               ),
@@ -118,7 +136,12 @@ class CardNote extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   // ignore: avoid_print
-                  print("Love");
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CustomDialogue(id: id);
+                    },
+                  );
                 },
                 child: Container(
                   width: 79,

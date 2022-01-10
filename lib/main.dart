@@ -15,7 +15,7 @@ void main() async {
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
- 
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => const RegisterScreen(),
           '/login': (context) => const LoginScreen(),
           '/dashboard': (context) => const Dashboard(),
-          '/add_note': (context) => const AddNoteScreen(),
+          '/add_note': (context) => const AddNoteScreen(body: '', head: '', type: ''),
           '/wrapper': (context) => const Wrapper(),
         },
         theme: ThemeData(

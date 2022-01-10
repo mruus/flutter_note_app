@@ -7,28 +7,32 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AddNoteScreen extends StatefulWidget {
-  const AddNoteScreen({Key? key}) : super(key: key);
-
+  const AddNoteScreen(
+      {Key? key, required this.head, required this.body, required this.type})
+      : super(key: key);
+  final String head;
+  final String body;
+  final String type;
   @override
   State<AddNoteScreen> createState() => _AddNoteScreenState();
 }
 
 class _AddNoteScreenState extends State<AddNoteScreen> {
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
   bool isError = false, isDone = true;
   String errorMessage = "";
   var note = NoteStore();
   final firebaseUser = FirebaseAuth.instance.currentUser;
 
   bool isValid() {
-    if (_descriptionController.text == "" && _titleController.text == "") {
+    if (descriptionController.text == "" && titleController.text == "") {
       isError = true;
       errorMessage = "Title And Description Are Required";
-    } else if (_titleController.text == "") {
+    } else if (titleController.text == "") {
       isError = true;
       errorMessage = "Title Is Required";
-    } else if (_descriptionController.text == "") {
+    } else if (descriptionController.text == "") {
       isError = true;
       errorMessage = "Description Is Required";
     } else {
@@ -64,7 +68,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                   ),
                 ),
                 child: TextField(
-                  controller: _titleController,
+                  controller: widget.head.isEmpty
+                      ? titleController
+                      : (titleController =
+                          TextEditingController(text: widget.head)),
                   minLines: 1,
                   maxLines: 20,
                   decoration: const InputDecoration(
@@ -90,7 +97,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                     vertical: kMargin,
                   ),
                   child: TextField(
-                    controller: _descriptionController,
+                    controller: widget.head.isEmpty
+                        ? descriptionController
+                        : (descriptionController =
+                            TextEditingController(text: widget.body)),
                     minLines: 1,
                     maxLines: 50,
                     decoration: const InputDecoration(
@@ -115,17 +125,20 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                       isError = true;
                     });
                   } else {
-                    note.title = _titleController.text;
-                    note.description = _descriptionController.text;
+                    note.title = titleController.text;
+                    note.description = descriptionController.text;
                     note.uid = firebaseUser!.uid;
 
                     setState(() {
                       isDone = false;
                     });
-                    await note.newNote();
+                    widget.type.isEmpty
+                        ? await note.newNote()
+                        : await note.updateNote(widget.type);
 
                     setState(() {
-                      if (note.errorMessage != "Note Added") {
+                      if (note.errorMessage != "Note Added" &&
+                          note.errorMessage != "Note Updated") {
                         isError = true;
                         errorMessage = note.errorMessage;
                         isDone = true;
