@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note_app/constants.dart';
+import 'package:flutter_note_app/screens/add_note_screen.dart';
+import 'package:flutter_note_app/screens/custom_dialogue.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -62,8 +65,10 @@ class CardNote extends StatelessWidget {
   const CardNote({
     Key? key,
     required this.title,
+    required this.id,
+    required this.description,
   }) : super(key: key);
-  final String title;
+  final String title, id, description;
 
   @override
   Widget build(BuildContext context) {
@@ -98,48 +103,73 @@ class CardNote extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  color: kColor_1,
-                ),
-                child: const Center(
-                  child: Icon(
-                    MdiIcons.pencil,
-                    color: kWhite,
-                    size: 15,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddNoteScreen(
+                        head: title,
+                        body: description,
+                        type: id,
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2),
+                    color: kColor_1,
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      MdiIcons.pencil,
+                      color: kWhite,
+                      size: 15,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 7),
-              Container(
-                width: 79,
-                height: 30,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  color: kColor_4,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      MdiIcons.delete,
-                      color: kWhite,
-                      size: 15,
-                    ),
-                    Text(
-                      "Delete".toUpperCase(),
-                      style: GoogleFonts.poppins(
-                        textStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          color: kWhite,
+              GestureDetector(
+                onTap: () {
+                  // ignore: avoid_print
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CustomDialogue(id: id);
+                    },
+                  );
+                },
+                child: Container(
+                  width: 79,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2),
+                    color: kColor_4,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        MdiIcons.delete,
+                        color: kWhite,
+                        size: 15,
+                      ),
+                      Text(
+                        "Delete".toUpperCase(),
+                        style: GoogleFonts.poppins(
+                          textStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: kWhite,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -150,14 +180,22 @@ class CardNote extends StatelessWidget {
   }
 }
 
-class LoggedUser extends StatelessWidget {
+class LoggedUser extends StatefulWidget {
   const LoggedUser({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<LoggedUser> createState() => _LoggedUserState();
+}
+
+class _LoggedUserState extends State<LoggedUser> {
+  bool isDone = true;
+  var db = AuthQueries(FirebaseAuth.instance);
+
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
-    var db = Queries(FirebaseAuth.instance);
     return Container(
       margin: const EdgeInsets.only(
         top: kMargin + 10,
@@ -169,36 +207,56 @@ class LoggedUser extends StatelessWidget {
         children: [
           const Icon(MdiIcons.accountSettingsOutline, color: kBlack),
           const SizedBox(width: 9),
-          Text(firebaseUser!.email.toString()),
+          Text(firebaseUser != null
+              ? firebaseUser.email.toString()
+              : "com.example@gmail.com"),
           const Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: kMargin / 2,
-              vertical: kMargin / 4,
-            ),
-            decoration: BoxDecoration(
-              color: kColor_2,
-              borderRadius: BorderRadius.circular(2),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(MdiIcons.accountArrowRight, color: kWhite, size: 20),
-                const SizedBox(width: 5),
-                GestureDetector(
-                  onTap: () {
-                    db.signOut();
-                  },
-                  child: Text("LOGOUT",
-                      style: GoogleFonts.poppins(
-                        textStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: kWhite,
-                          fontSize: 12,
+          GestureDetector(
+            onTap: () async {
+              setState(() {
+                isDone = false;
+              });
+              await db.signOut();
+              setState(() {
+                isDone = true;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: kMargin / 2,
+                vertical: kMargin / 4,
+              ),
+              decoration: BoxDecoration(
+                color: kColor_2,
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  isDone
+                      ? const Icon(MdiIcons.accountArrowRight,
+                          color: kWhite, size: 20)
+                      : const SizedBox(
+                          height: 20,
+                          child: SpinKitWave(
+                            color: kWhite,
+                            size: 15.0,
+                            itemCount: 8,
+                          ),
                         ),
-                      )),
-                ),
-              ],
+                  const SizedBox(width: 5),
+                  Text(
+                    "LOGOUT",
+                    style: GoogleFonts.poppins(
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: kWhite,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

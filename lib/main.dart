@@ -10,7 +10,7 @@ import 'package:flutter_note_app/wrapper.dart';
 import 'package:provider/provider.dart';
 import 'screens/login_screen.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -24,11 +24,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<Queries>(
-          create: (_) => Queries(FirebaseAuth.instance),
+        Provider<AuthQueries>(
+          create: (_) => AuthQueries(FirebaseAuth.instance),
         ),
         StreamProvider(
-          create: (_) => Queries(FirebaseAuth.instance).isAuthenticated,
+          create: (_) => AuthQueries(FirebaseAuth.instance).isAuthenticated,
           initialData: null,
         ),
       ],
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => const RegisterScreen(),
           '/login': (context) => const LoginScreen(),
           '/dashboard': (context) => const Dashboard(),
-          '/add_note': (context) => const AddNoteScreen(),
+          '/add_note': (context) => const AddNoteScreen(body: '', head: '', type: ''),
           '/wrapper': (context) => const Wrapper(),
         },
         theme: ThemeData(

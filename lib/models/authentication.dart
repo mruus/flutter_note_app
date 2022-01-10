@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-class Queries {
+class AuthQueries {
   late String email;
   late String password;
   User? user;
@@ -8,7 +8,7 @@ class Queries {
 
   FirebaseAuth auth;
 
-  Queries(this.auth);
+  AuthQueries(this.auth);
 
   registerUser() async {
     try {
