@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note_app/models/authentication.dart';
@@ -8,6 +7,8 @@ import 'package:flutter_note_app/screens/register_screen.dart';
 import 'package:flutter_note_app/screens/splash_screen.dart';
 import 'package:flutter_note_app/wrapper.dart';
 import 'package:provider/provider.dart';
+import 'models/note_queries.dart';
+import 'models/notes.dart';
 import 'screens/login_screen.dart';
 
 void main() async {
@@ -25,12 +26,19 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<AuthQueries>(
-          create: (_) => AuthQueries(FirebaseAuth.instance),
+          create: (_) => AuthQueries(),
+        ),
+        Provider<NoteStore>(
+          create: (_) => NoteStore(),
         ),
         StreamProvider(
-          create: (_) => AuthQueries(FirebaseAuth.instance).isAuthenticated,
+          create: (_) => AuthQueries().isAuthenticated,
           initialData: null,
         ),
+        StreamProvider<List<Note>>(
+          create: (_) => NoteStore().getNotes,
+          initialData: const [],
+        )
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -41,7 +49,8 @@ class MyApp extends StatelessWidget {
           '/register': (context) => const RegisterScreen(),
           '/login': (context) => const LoginScreen(),
           '/dashboard': (context) => const Dashboard(),
-          '/add_note': (context) => const AddNoteScreen(body: '', head: '', type: ''),
+          '/add_note': (context) =>
+              const AddNoteScreen(body: '', head: '', type: ''),
           '/wrapper': (context) => const Wrapper(),
         },
         theme: ThemeData(

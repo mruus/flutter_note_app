@@ -1,14 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-
 class AuthQueries {
   late String email;
   late String password;
   User? user;
   String errorMessage = '';
 
-  FirebaseAuth auth;
-
-  AuthQueries(this.auth);
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   registerUser() async {
     try {
@@ -23,8 +20,6 @@ class AuthQueries {
         errorMessage = 'Email Is Already In Use';
       }
     } catch (e) {
-      // ignore: avoid_print
-      print(e);
       errorMessage = "Catch Error";
     }
   }
