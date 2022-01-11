@@ -1,5 +1,4 @@
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note_app/constants.dart';
 import 'package:flutter_note_app/models/authentication.dart';
@@ -19,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool isError = false, isDone = true;
   String errorMessage = "Error Will Be Showed";
-  var db = AuthQueries(FirebaseAuth.instance);
+  var db = AuthQueries();
 
   bool isValid() {
     if (_passwordController.text == "" && _emailController.text == "") {

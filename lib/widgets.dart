@@ -191,7 +191,7 @@ class LoggedUser extends StatefulWidget {
 
 class _LoggedUserState extends State<LoggedUser> {
   bool isDone = true;
-  var db = AuthQueries(FirebaseAuth.instance);
+  var db = AuthQueries();
 
   @override
   Widget build(BuildContext context) {
